@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Canvas Drawing App</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <script src="./bundle.js"></script>
+</head>
+
+<body class="w-screen h-screen bg-gray-300">
+
+    <div x-data="{ selectedTool: undefined }" class="h-4/6 w-full p-6 bg-green-500">
+
+        <div id="toolbar-dock" class="flex flex-row bg-gray-200 rounded-t-lg">
+
+            <div id="2-part-toolbar" class="flex justify-between w-full">
+                <div id="toolbar">
+                    <button id="pencil" x-on:click="selectedTool = 'pencil'"
+                        x-bind:class="(selectedTool==='pencil') ? 'bg-gray-300' : ''"
+                        class="w-8 h-8 sm:h-10 sm:w-10 bg-white rounded-lg m-2">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+
+                    <button id="circle" x-on:click="selectedTool = 'circle'"
+                        x-bind:class="(selectedTool==='circle') ? 'bg-gray-300' : ''"
+                        class="w-8 h-8 sm:h-10 sm:w-10 bg-white rounded-lg m-2">
+                        <i class="fas fa-circle"></i>
+                    </button>
+
+                    <button id="rectangle" x-on:click="selectedTool = 'rectangle'"
+                        x-bind:class="(selectedTool==='rectangle') ? 'bg-gray-300' : ''"
+                        class="w-8 h-8 sm:h-10 sm:w-10 bg-white rounded-lg m-2">
+                        <i class="fas fa-square"></i>
+                    </button>
+
+                    <button id="clear" x-on:click="$store.svgPressed.clear()"
+                        class="w-8 h-8 sm:h-10 sm:w-10 hover:bg-gray-300 bg-white rounded-lg m-2">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+
+                    <button id="undo" x-on:click="$store.svgPressed.undo()"
+                        class="w-8 h-8 sm:h-10 sm:w-10 hover:bg-gray-300 bg-white rounded-lg m-2">
+                        <i class="fas fa-undo"></i>
+                    </button>
+
+                </div>
+
+                <div id="toolbar2">
+
+                    <select class="w-10 h-8 sm:h-10 sm:w-12 m-2 p-2 bg-white cursor-pointer rounded-lg"
+                        x-on:change="$store.svgPressed.currentStrokeWidth=$event.target.value" id="stroke-width">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- The colorpicker had to be in a seperate div tag because it messes up spacing -->
+            <div id="rejected-toolbar" class="flex flex-row">
+                <input type="color" class="w-8 h-8 sm:h-10 sm:w-10 m-2 p-2 bg-white cursor-pointer rounded-lg"
+                    x-on:change="$store.svgPressed.currentColor=$event.target.value" id="color-picker">
+            </div>
+
+        </div>
+
+        <svg id="svg" class="w-full h-5/6 bg-white rounded-b-lg" x-on:mouseup="$store.svgPressed.mouseUp($event)"
+            x-on:mousedown="$store.svgPressed.mouseDown($event, selectedTool)"
+            x-on:mouseleave="$store.svgPressed.mouseLeave($event)"
+            x-on:mouseenter="$store.svgPressed.mouseEnter($event)"
+            x-on:mousemove="$store.svgPressed.mouseMove($event, selectedTool)"></svg>
+    </div>
+
+    <div class="h-2/6 w-full p-6 relative">
+        <button
+            onclick="var t = document.getElementById('svgDumpTextbox'); t.select(); t.setSelectionRange(0, 99999); navigator.clipboard.writeText(t.value);"
+            class="absolute text-sm font-semibold top-8 right-8 rounded-lg bg-gray-300 hover:bg-gray-400 p-2 m-2 ">Copy
+            SVG</button>
+        <textarea id="svgDumpTextbox" class="w-full h-full rounded-lg overflow-y-scroll p-2" readonly
+            onfocus="this.blur();" style="resize: none;"></textarea>
+    </div>
+
+</body>
+
+</html>
